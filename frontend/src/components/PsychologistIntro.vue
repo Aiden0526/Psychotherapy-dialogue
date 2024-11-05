@@ -49,8 +49,11 @@ export default {
       this.$router.push('/');
     },
     startChat() {
-      // Navigate to the chat page with the selected psychologist
-      this.$router.push(`/psychologist/${this.psychologist.id}/chat`);
+      // Navigate to the chat page with the selected psychologist and also pass the psychologist's name
+      this.$router.push({
+        path: `/psychologist/${this.psychologist.id}/chat`,
+        query: { name: this.psychologist.name }
+      });
     }
   }
 };

@@ -25,7 +25,7 @@
         messages: [],     // Array to store the dialogue messages
         psychologist: {
           id: this.$route.params.id,
-          name: "Psychologist" // Placeholder name, replace with dynamic data if needed
+          name: this.$route.query.name || "Psychologist" // Psychologist's name received from the query parameter
         }
       };
     },
