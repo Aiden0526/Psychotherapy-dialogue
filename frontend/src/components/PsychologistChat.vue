@@ -100,8 +100,8 @@ margin-bottom: 1.5rem;
 /* Dialogue box to display the messages */
 .dialogue-box {
 width: 100%;
-max-width: 600px;
-height: 300px;
+max-width: 1000px;
+height: 600px;
 border: 1px solid #ddd;
 background-color: white;
 overflow-y: auto;
