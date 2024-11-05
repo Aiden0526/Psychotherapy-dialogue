@@ -14,6 +14,12 @@
         <input v-model="userMessage" type="text" placeholder="Type your message..." />
         <button @click="sendMessage">Send</button>
       </div>
+
+      <!-- Back button to return to the introduction page -->
+      <div>
+        <button @click="goBack">Back to Introduction</button>
+      </div>
+
     </div>
   </template>
   
@@ -30,26 +36,30 @@
       };
     },
     methods: {
-      sendMessage() {
-        if (this.userMessage.trim() !== '') {
-          // Add the user's message to the messages array
-          this.messages.push({
-            id: Date.now(),
-            text: this.userMessage,
-            sender: 'User'
-          });
-  
-          // Clear the input box after sending
-          this.userMessage = '';
-  
-          // Placeholder response from the psychologist
-          this.messages.push({
-            id: Date.now() + 1,
-            text: 'Placeholder response from the psychologist.',
-            sender: 'Psychologist'
-          });
+        sendMessage() {
+            if (this.userMessage.trim() !== '') {
+            // Add the user's message to the messages array
+            this.messages.push({
+                id: Date.now(),
+                text: this.userMessage,
+                sender: 'User'
+            });
+    
+            // Clear the input box after sending
+            this.userMessage = '';
+    
+            // Placeholder response from the psychologist
+            this.messages.push({
+                id: Date.now() + 1,
+                text: 'Placeholder response from the psychologist.',
+                sender: 'Psychologist'
+            });
+            }
+        },
+        goBack() {
+            // Navigate back to the introduction page
+            this.$router.push(`/psychologist/${this.psychologist.id}/intro`);
         }
-      }
     }
   };
   </script>
