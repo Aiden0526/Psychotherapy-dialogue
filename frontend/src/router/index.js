@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '@/components/HomePage.vue';          // Import HomePage
 import PsychologistIntro from '@/components/PsychologistIntro.vue';  // Import PsychologistIntro
+import PsychologistChat from '@/components/PsychologistChat.vue'; // Import PsychologistChat
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/psychologist/:id/intro',  // Route for psychologist introduction page
     name: 'PsychologistIntro',
     component: PsychologistIntro
+  },
+  {
+    path: '/psychologist/:id/chat',
+    name: 'PsychologistChat', // Route for psychologist chat page
+    component: PsychologistChat
   }
 ];
 
