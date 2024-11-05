@@ -20,19 +20,19 @@ export default {
           id: 1,
           name: "Sigmund Freud",
           bio: "Sigmund Freud was an Austrian neurologist and the founder of psychoanalysis. His theories on the unconscious mind and the mechanisms of repression are some of the most well-known in psychology.",
-          image: require('@/assets/Freud.jpeg')
+          image: '/assets/Freud.jpeg'
         },
         {
           id: 2,
           name: "Carl Jung",
           bio: "Carl Jung was a Swiss psychiatrist and psychoanalyst who founded analytical psychology. His work has been influential not only in psychiatry but also in philosophy, anthropology, and religious studies.",
-          image: require('@/assets/Jung.jpeg')
+          image: '/assets/Jung.jpeg'
         },
         {
           id: 3,
           name: "Alfred Adler",
           bio: "Alfred Adler was an Austrian medical doctor, psychotherapist, and founder of the school of individual psychology. His emphasis on the importance of feelings of inferiority is recognized as an isolating element which plays a key role in personality development.",
-          image: require('@/assets/adler.jpeg')
+          image: '/assets/Adler.jpeg'
         }
       ],
       psychologist: {}
@@ -52,7 +52,7 @@ export default {
       // Navigate to the chat page with the selected psychologist and also pass the psychologist's name
       this.$router.push({
         path: `/psychologist/${this.psychologist.id}/chat`,
-        query: { name: this.psychologist.name }
+        query: { name: this.psychologist.name, image: this.psychologist.image }
       });
     }
   }

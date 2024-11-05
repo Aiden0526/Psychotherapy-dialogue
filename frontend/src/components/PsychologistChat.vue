@@ -1,24 +1,33 @@
 <template>
-    <div>
-      <h2>Chat with {{ psychologist.name }}</h2>
+    <div class="chat-container">
+        <h2>Chat with {{ psychologist.name }}</h2>
   
-      <!-- Dialogue box where messages will be displayed -->
-      <div>
-        <div v-for="message in messages" :key="message.id">
-          <p><strong>{{ message.sender }}:</strong> {{ message.text }}</p>
-        </div>
-      </div>
-  
-      <!-- Input box and send button -->
-      <div>
-        <input v-model="userMessage" type="text" placeholder="Type your message..." />
-        <button @click="sendMessage">Send</button>
-      </div>
+        <!-- Dialogue box where messages will be displayed -->
+        <div class="dialogue-box">
+            <div v-for="message in messages" :key="message.id" :class="{'user-message': message.sender === 'User', 'psychologist-message': message.sender === 'Psychologist'}">
+                <!-- For psychologist: label on the left -->
+                <div v-if="message.sender === 'Psychologist'" class="psychologist-image">
+                    <img :src="psychologist.image" :alt="psychologist.name" />
+                </div>
 
-      <!-- Back button to return to the introduction page -->
-      <div>
-        <button @click="goBack">Back to Introduction</button>
-      </div>
+                <!-- Message text -->
+                <div class="message-text">
+                    <p>{{ message.text }}</p>
+                </div>
+
+            </div>
+        </div>
+  
+        <!-- Input box and send button -->
+        <div class="input-box">
+            <input v-model="userMessage" type="text" placeholder="Type your message..." />
+            <button @click="sendMessage">Send</button>
+        </div>
+
+        <!-- Back button to return to the introduction page -->
+        <div class="back-button-container">
+            <button @click="goBack" class="back-button">Back to Introduction</button>
+        </div>
 
     </div>
   </template>
@@ -31,7 +40,8 @@
         messages: [],     // Array to store the dialogue messages
         psychologist: {
           id: this.$route.params.id,
-          name: this.$route.query.name || "Psychologist" // Psychologist's name received from the query parameter
+          name: this.$route.query.name || "Psychologist", // Psychologist's name received from the query parameter
+          image: this.$route.query.image // Psychologist's image received from the query parameter
         }
       };
     },
@@ -64,3 +74,111 @@
   };
   </script>
   
+
+
+
+<style scoped>
+/* Container for the chat page */
+.chat-container {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 2rem;
+font-family: 'Arial', sans-serif;
+min-height: 100vh;
+background-color: #f4f6f9;
+}
+
+/* Title styling */
+h2 {
+font-size: 1.8rem;
+color: #333;
+margin-bottom: 1.5rem;
+}
+
+/* Dialogue box to display the messages */
+.dialogue-box {
+width: 100%;
+max-width: 600px;
+height: 300px;
+border: 1px solid #ddd;
+background-color: white;
+overflow-y: auto;
+padding: 1rem;
+margin-bottom: 1rem;
+border-radius: 8px;
+}
+
+/* Styling for user and psychologist messages */
+.user-message {
+text-align: right;
+margin-bottom: 0.5rem;
+color: #4caf50;
+}
+
+.psychologist-message {
+display: flex;
+align-items: center;
+text-align: left;
+margin-bottom: 0.5rem;
+color: #2196f3;
+}
+
+/* Psychologist's image styling */
+.psychologist-image img {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+margin-right: 10px; /* Add space between image and message */
+}
+
+/* Input box and send button */
+.input-box {
+display: flex;
+gap: 0.5rem;
+width: 100%;
+max-width: 600px;
+}
+
+.input-box input {
+flex-grow: 1;
+padding: 0.8rem;
+border: 1px solid #ddd;
+border-radius: 4px;
+font-size: 1rem;
+}
+
+.input-box button {
+background-color: #4caf50;
+color: white;
+padding: 0.8rem 1.5rem;
+border: none;
+border-radius: 4px;
+font-size: 1rem;
+cursor: pointer;
+}
+
+.input-box button:hover {
+background-color: #45a049;
+}
+
+/* Back to Introduction button */
+.back-button-container {
+margin-top: 1rem;
+}
+
+.back-button {
+background-color: #f44336;
+color: white;
+padding: 0.8rem 1.5rem;
+border: none;
+border-radius: 4px;
+font-size: 1rem;
+cursor: pointer;
+}
+
+.back-button:hover {
+background-color: #d32f2f;
+}
+</style>
