@@ -1,6 +1,7 @@
 <template>
   <div class="psychologist-intro">
     <h1>{{ psychologist.name }}</h1>
+    <img :src="psychologist.image" :alt="psychologist.name" class="psychologist-image" />
     <p class="bio">{{ psychologist.bio }}</p>
     
     <div class="buttons-container">
@@ -18,31 +19,37 @@ export default {
         {
           id: 1,
           name: "Sigmund Freud",
-          bio: "Sigmund Freud was an Austrian neurologist and the founder of psychoanalysis. His theories on the unconscious mind and the mechanisms of repression are some of the most well-known in psychology."
+          bio: "Sigmund Freud was an Austrian neurologist and the founder of psychoanalysis. His theories on the unconscious mind and the mechanisms of repression are some of the most well-known in psychology.",
+          image: require('@/assets/Freud.jpeg')
         },
         {
           id: 2,
           name: "Carl Jung",
-          bio: "Carl Jung was a Swiss psychiatrist and psychoanalyst who founded analytical psychology. His work has been influential not only in psychiatry but also in philosophy, anthropology, and religious studies."
+          bio: "Carl Jung was a Swiss psychiatrist and psychoanalyst who founded analytical psychology. His work has been influential not only in psychiatry but also in philosophy, anthropology, and religious studies.",
+          image: require('@/assets/Jung.jpeg')
         },
         {
           id: 3,
           name: "Alfred Adler",
-          bio: "Alfred Adler was an Austrian medical doctor, psychotherapist, and founder of the school of individual psychology. His emphasis on the importance of feelings of inferiority is recognized as an isolating element which plays a key role in personality development."
+          bio: "Alfred Adler was an Austrian medical doctor, psychotherapist, and founder of the school of individual psychology. His emphasis on the importance of feelings of inferiority is recognized as an isolating element which plays a key role in personality development.",
+          image: require('@/assets/adler.jpeg')
         }
       ],
       psychologist: {}
     };
   },
   created() {
+    // Get the psychologist ID from the route parameters and load the corresponding psychologist's data
     const psychologistId = parseInt(this.$route.params.id);
     this.psychologist = this.psychologists.find(p => p.id === psychologistId);
   },
   methods: {
     goBack() {
+      // Navigate back to the home page
       this.$router.push('/');
     },
     startChat() {
+      // Navigate to the chat page with the selected psychologist
       this.$router.push(`/psychologist/${this.psychologist.id}/chat`);
     }
   }
@@ -62,10 +69,19 @@ export default {
   font-family: 'Arial', sans-serif;
 }
 
+
 /* Styling for the psychologist's name */
 h1 {
   font-size: 2.5rem;
   color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Image styling */
+.psychologist-image {
+  width: 200px;
+  height: auto;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
 }
 
