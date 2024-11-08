@@ -1,0 +1,6 @@
+# Ignore Python cache files
+backend/__pycache__/
+
+# Ignore Node modules
+node_modules/
+
