@@ -33,17 +33,43 @@
   </template>
   
   <script>
-  export default {
+
+import { io } from 'socket.io-client';
+// import axios from 'axios';
+
+export default {
     data() {
-      return {
-        userMessage: '',  // Message typed by the user
-        messages: [],     // Array to store the dialogue messages
+        return {
+        userMessage: '', // Message typed by the user
+        messages: [], // Array to store the dialogue messages
         psychologist: {
-          id: this.$route.params.id,
-          name: this.$route.query.name || "Psychologist", // Psychologist's name received from the query parameter
-          image: this.$route.query.image // Psychologist's image received from the query parameter
+            id: this.$route.params.id,
+            name: this.$route.query.name || 'Psychologist', // Psychologist's name received from the query parameter
+            image: this.$route.query.image, // Psychologist's image received from the query parameter
+        },
+        socket: null, // Socket.IO client
+        };
+    },
+    created() {
+        // Initialize the Socket.IO client
+        this.socket = io('http://localhost:5000');
+
+        // Listen for 'response_streaming' events
+        this.socket.on('response_streaming', (data) => {
+        console.log('Received chunk:', data.data);
+
+        // Update the last message from the psychologist
+        if (this.messages.length > 0 && this.messages[this.messages.length - 1].sender === 'Psychologist') {
+            this.messages[this.messages.length - 1].text += data.data;
+        } else {
+            // If there is no existing message from the psychologist, create a new one
+            this.messages.push({
+            id: Date.now() + 1,
+            text: data.data,
+            sender: 'Psychologist',
+            });
         }
-      };
+        });
     },
     methods: {
         async sendMessage() {
@@ -52,61 +78,57 @@
             this.messages.push({
                 id: Date.now(),
                 text: this.userMessage,
-                sender: 'User'
+                sender: 'User',
             });
-    
+
             // Clear the input box after sending
             const userQuestion = this.userMessage;
             this.userMessage = '';
-    
+
             try {
-                // Send the user's message to the backend for processing
-                const response = await fetch('http://localhost:5000/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        psychologist_name: this.psychologist.name,
-                        user_question: userQuestion
-                    })
+                // Send the user's message to the backend to initiate streaming
+                const response = await fetch('http://localhost:5000/chat/streaming', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    psychologist_name: this.psychologist.name,
+                    user_question: userQuestion,
+                }),
                 });
-    
-                
-    
+
                 // Get the response from the backend
                 const data = await response.json();
-    
-                if (response.ok) {
-                    // Add the psychologist's response to the messages array
-                    this.messages.push({
-                        id: Date.now() + 1,
-                        text: data.response,
-                        sender: 'Psychologist'
-                    });
-                    } else {
-                    // Display an error message if the response was not successful
-                    console.error("Error from backend:", data.error);
-                    this.messages.push({
-                        id: Date.now() + 1,
-                        text: "There was an error processing your request. Please try again later.",
-                        sender: 'Psychologist'
-                    });
+
+                if (!response.ok) {
+                // Display an error message if the response was not successful
+                console.error('Error from backend:', data.error);
+                this.messages.push({
+                    id: Date.now() + 1,
+                    text: 'There was an error processing your request. Please try again later.',
+                    sender: 'Psychologist',
+                });
                 }
             } catch (error) {
-                console.error("Error connecting to backend:", error);
+                console.error('Error connecting to backend:', error);
                 this.messages.push({
                 id: Date.now() + 1,
-                text: "Unable to connect to the server. Please check your connection.",
-                sender: 'Psychologist'
+                text: 'Unable to connect to the server. Please check your connection.',
+                sender: 'Psychologist',
                 });
             }
-            
+        },
+        beforeDestroy() {
+            // Clean up the socket connection when the component is destroyed
+            if (this.socket) {
+            this.socket.disconnect();
+            }
         },
         goBack() {
             // Navigate back to the introduction page
             this.$router.push(`/psychologist/${this.psychologist.id}/intro`);
-        }
+        },
     }
   };
   </script>
