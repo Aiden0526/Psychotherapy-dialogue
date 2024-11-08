@@ -17,9 +17,9 @@ class OpenAIChat:
             prompt_template = f.read()
         return prompt_template
     
-    def construct_prompt(self, psychologist_name: str, user_question: str, historical_message_list: list, prompt_template: str) -> str:
+    def construct_prompt(self, psychologist_name: str, user_question: str, historical_message_list: list) -> str:
         """Construct prompt to role-play psychologist"""
-        full_prompt = prompt_template
+        full_prompt = self.load_file()
         full_prompt = full_prompt.replace("{psychologist_name}", psychologist_name)
         full_prompt = full_prompt.replace("{user_question}", user_question)
         full_prompt = full_prompt.replace("{historical_messages}", historical_message_list[-1]) # Only use the last message to avoid hitting the token limit
