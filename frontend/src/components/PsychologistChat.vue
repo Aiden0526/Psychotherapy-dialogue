@@ -46,8 +46,8 @@
       };
     },
     methods: {
-        sendMessage() {
-            if (this.userMessage.trim() !== '') {
+        async sendMessage() {
+            if (this.userMessage.trim() !== '') return;
             // Add the user's message to the messages array
             this.messages.push({
                 id: Date.now(),
@@ -56,15 +56,49 @@
             });
     
             // Clear the input box after sending
+            const response = userQuestion = this.userMessage;
             this.userMessage = '';
     
-            // Placeholder response from the psychologist
-            this.messages.push({
+            try {
+                // Send the user's message to the backend for processing
+                const response = await fetch('http://localhost:5000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userQuestion })
+                });
+    
+                
+    
+                // Get the response from the backend
+                const data = await response.json();
+    
+                if (response.ok) {
+                    // Add the psychologist's response to the messages array
+                    this.messages.push({
+                        id: Date.now() + 1,
+                        text: data.response,
+                        sender: 'Psychologist'
+                    });
+                    } else {
+                    // Display an error message if the response was not successful
+                    console.error("Error from backend:", data.error);
+                    this.messages.push({
+                        id: Date.now() + 1,
+                        text: "There was an error processing your request. Please try again later.",
+                        sender: 'Psychologist'
+                    });
+                }
+            } catch (error) {
+                console.error("Error connecting to backend:", error);
+                this.messages.push({
                 id: Date.now() + 1,
-                text: 'Placeholder response from the psychologist.',
+                text: "Unable to connect to the server. Please check your connection.",
                 sender: 'Psychologist'
-            });
+                });
             }
+            
         },
         goBack() {
             // Navigate back to the introduction page
