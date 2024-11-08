@@ -47,7 +47,7 @@
     },
     methods: {
         async sendMessage() {
-            if (this.userMessage.trim() !== '') return;
+            if (this.userMessage.trim() === '') return;
             // Add the user's message to the messages array
             this.messages.push({
                 id: Date.now(),
@@ -56,7 +56,7 @@
             });
     
             // Clear the input box after sending
-            const response = userQuestion = this.userMessage;
+            const userQuestion = this.userMessage;
             this.userMessage = '';
     
             try {
@@ -66,7 +66,10 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ message: userQuestion })
+                    body: JSON.stringify({
+                        psychologist_name: this.psychologist.name,
+                        user_question: userQuestion
+                    })
                 });
     
                 
