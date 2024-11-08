@@ -4,6 +4,8 @@ import os
 import time
 import logging
 
+logger = logging.getLogger(__name__)
+
 class OpenAIChat:
     """Class to handle interactions with the OpenAI api"""
     
@@ -77,3 +79,41 @@ class OpenAIChat:
                     print(f"Attempt {attempt + 1} failed: {e}. Retrying in {delay} seconds...")
                     time.sleep(delay)
                     attempt += 1
+                    
+                    
+    def get_response_streaming(self, prompt: str, retries: int = 3, delay: float = 1.0) -> str:
+        """Get response from OpenAI
+        
+        Args:
+            prompt (str): The constructed prompt for OpenAI API to process.
+        
+        Returns:
+            str: The response text from OpenAI.
+        
+        Raises:
+            openai.error.OpenAIError: If the OpenAI API request fails after all retry attempts.
+        """
+        attempt = 0
+        while attempt <= retries:
+            try:
+                response = openai.ChatCompletion.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": prompt}],
+                    stream=True
+                )
+                logger.info("Successfully connected to OpenAI. Streaming response started.")
+                
+                # Yield each part of the streaming response
+                for chunk in response:
+                    text_part = chunk['choices'][0]['delta'].get('content', '')
+                    logging.debug(f"Text part from OpenAI: {text_part}")
+                    yield text_part
+                break
+            
+            except OpenAIError as e:
+                logging.error(f"OpenAIError during streaming: {e}")
+                if attempt == retries:
+                    yield "Error: Unable to process request."
+            except Exception as e:
+                logging.error(f"Error during streaming: {e}")
+                yield "Error: Unable to process request."
