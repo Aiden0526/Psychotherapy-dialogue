@@ -60,7 +60,21 @@ def chat():
 
 @app.route('/chat/streaming', methods=['POST'])
 def chat_streaming():
-    """Endpoint to handle and initiate streaming response to the client."""
+    """Endpoint to handle and initiate streaming response to the client.
+    
+    Input:
+        JSON payload with the following fields:
+            - `psychologist_name` (str): The name of the psychologist to role-play.
+            - `user_question` (str): The question posed by the user.
+
+    Output:
+        - Emits each chunk of the OpenAI streaming response to the client using Socket.IO.
+        - Final JSON response to indicate completion of streaming (not part of streaming itself).
+    
+    Raises:
+        - 400 Bad Request: If either `psychologist_name` or `user_question` is missing from the request payload.
+        - 500 Internal Server Error: If there is an issue while communicating with OpenAI API.
+    """
     data = request.get_json()
     logging.debug(f"Request JSON payload: {data}")
     psychologist_name = data.get('psychologist_name')
