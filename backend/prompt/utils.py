@@ -1,5 +1,7 @@
 import openai
+from openai.error import OpenAIError
 import os
+import time
 
 class OpenAIChat:
     """Class to handle interactions with the OpenAI api"""
@@ -45,7 +47,7 @@ class OpenAIChat:
         full_prompt = full_prompt.replace("{historical_messages}", last_message) 
         return full_prompt
     
-    def get_response(self, prompt: str) -> str:
+    def get_response(self, prompt: str, retries: int = 3, delay: float = 1.0) -> str:
         """Get response from OpenAI
         
         Args:
@@ -55,13 +57,24 @@ class OpenAIChat:
             str: The response text from OpenAI.
         
         Raises:
-            openai.error.OpenAIError: If the OpenAI API request fails.
+            openai.error.OpenAIError: If the OpenAI API request fails after all retry attempts.
         """
-        response = openai.Completion.create(
-            engine=self.model,
-            prompt=prompt,
-            temperature=0.7,
-            frequency_penalty=0,
-            presence_penalty=0,
-        )
-        return response.choices[0].text
+        attempt = 0
+        while attempt <= retries:
+            try:
+                response = openai.Completion.create(
+                    engine=self.model,
+                    prompt=prompt,
+                    temperature=0.7,
+                    frequency_penalty=0,
+                    presence_penalty=0,
+                )
+                return response.choices[0].text
+            
+            except OpenAIError as e:
+                if attempt == retries:
+                    raise  # Re-raise the exception after the last attempt
+                else:
+                    print(f"Attempt {attempt + 1} failed: {e}. Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                    attempt += 1
