@@ -39,7 +39,10 @@ class OpenAIChat:
         full_prompt = self.load_file()
         full_prompt = full_prompt.replace("{psychologist_name}", psychologist_name)
         full_prompt = full_prompt.replace("{user_question}", user_question)
-        full_prompt = full_prompt.replace("{historical_messages}", historical_message_list[-1]) # Only use the last message to avoid hitting the token limit
+        
+        # Only use the last message to avoid hitting the token limit
+        last_message = historical_message_list[-1] if historical_message_list else "No historical messages"
+        full_prompt = full_prompt.replace("{historical_messages}", last_message) 
         return full_prompt
     
     def get_response(self, prompt: str) -> str:
