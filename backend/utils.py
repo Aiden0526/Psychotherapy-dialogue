@@ -2,6 +2,7 @@ import openai
 from openai.error import OpenAIError
 import os
 import time
+import logging
 
 class OpenAIChat:
     """Class to handle interactions with the OpenAI api"""
@@ -62,14 +63,12 @@ class OpenAIChat:
         attempt = 0
         while attempt <= retries:
             try:
-                response = openai.Completion.create(
-                    engine=self.model,
-                    prompt=prompt,
-                    temperature=0.7,
-                    frequency_penalty=0,
-                    presence_penalty=0,
+                response = openai.ChatCompletion.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": prompt}],
                 )
-                return response.choices[0].text
+                logging.debug(f"Response from OpenAI: {response}")
+                return response.choices[0].message['content']
             
             except OpenAIError as e:
                 if attempt == retries:

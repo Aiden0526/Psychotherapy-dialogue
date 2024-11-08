@@ -1,7 +1,10 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from utils import OpenAIChat
+import logging
 
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 CORS(app)
@@ -26,6 +29,7 @@ def chat():
         500 Internal Server Error: If there is an issue communicating with the OpenAI API.
     """
     data = request.get_json()
+    logging.debug(f"Request JSON payload: {data}")
     psychologist_name = data.get('psychologist_name')
     user_question = data.get('user_question')
     
@@ -35,10 +39,12 @@ def chat():
     
     # Load prompt template
     prompt = openai_chat.construct_prompt(psychologist_name, user_question, openai_chat.historical_messages)
+    logging.debug(f"Constructed prompt: {prompt}")
     
     # Get response from OpenAI
     try:
         response = openai_chat.get_response(prompt).strip()
+        logging.debug(f"Response from utils: {response}")
     except Exception as e:
         return jsonify({"Fail to get response from OpenAI": str(e)}), 500
     
