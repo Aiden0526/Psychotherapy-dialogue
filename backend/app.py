@@ -2,12 +2,14 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from utils import OpenAIChat
 import logging
+from flask_socketio import SocketIO
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 openai_chat = OpenAIChat()
 
@@ -55,5 +57,38 @@ def chat():
     # Send response to frontend
     return jsonify({"response": response})
 
+
+@app.route('/chat/streaming', methods=['POST'])
+def chat_streaming():
+    """Endpoint to handle and initiate streaming response to the client."""
+    data = request.get_json()
+    logging.debug(f"Request JSON payload: {data}")
+    psychologist_name = data.get('psychologist_name')
+    user_question = data.get('user_question')
+    
+    # Validate input
+    if not user_question or not psychologist_name:
+        return jsonify({"error": "Missing required fields: message or psychologist_name"}), 400
+    
+    # Load prompt template
+    prompt = openai_chat.construct_prompt(psychologist_name, user_question, openai_chat.historical_messages)
+    logging.debug(f"Constructed prompt: {prompt}")
+    
+    # Get response from OpenAI
+    try:
+        # Stream the OpenAI response to the client
+        for chunk in openai_chat.get_response_streaming(prompt):
+            if chunk:
+                logging.debug(f"Response from utils: {chunk}")
+                socketio.emit('response_streaming', {'data': chunk})
+            else:
+                logging.debug("Received empty chunk, skipping.")
+
+    except Exception as e:
+        logging.error(f"Failed to get response from utils: {e}")
+        return jsonify({"Fail to get response from utils": str(e)}), 500
+    
+    return jsonify({"error": "Streaming complete"})
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
