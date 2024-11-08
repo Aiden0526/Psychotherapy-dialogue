@@ -9,9 +9,9 @@ Below are the instructions for this role-play:
 - If there is a history of messages, respond in continuity with the conversation’s tone and context.
 
 The input you receive will include:
-- **Psychologist Name**: {psychologist_name}
-- **Historical Messages**: (prior conversation details) {historical_messages}
-- **User's Question**: (the user’s current question) {user_question}
+- Psychologist Name: {psychologist_name}
+- Historical Messages: (prior conversation details) {historical_messages}
+- User's Question: (the user’s current question) {user_question}
 
 Your task:
 - Carefully read any historical messages to understand the context and flow of the conversation.
