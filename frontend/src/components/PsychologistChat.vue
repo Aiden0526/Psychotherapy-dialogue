@@ -43,7 +43,7 @@
                 <!-- Psychologist Image -->
                 <img :src="psychologist.image" :alt="psychologist.name" class="modal-image" />
 
-                <p>{{ summary }}</p>
+                <p v-html="summary"></p> <!-- Use v-html here to render <br> tags -->
                 <button @click="closeSummary" class="close-button">Close</button>
             </div>
         </div>
@@ -163,7 +163,7 @@ export default {
                 console.log(data);
 
                 if (response.ok) {
-                this.summary = data.summary; //update the summary from backend
+                this.summary = data.summary.replace(/\n/g, '<br>'); //update the summary from backend
                 } else {
                 console.error('Error fetching summary:', data.error);
                 this.summary = 'Failed to load summary. Please try again later.';
