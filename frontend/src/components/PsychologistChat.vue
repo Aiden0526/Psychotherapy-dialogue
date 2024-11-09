@@ -29,6 +29,22 @@
             <button @click="goBack" class="back-button">Back to Introduction</button>
         </div>
 
+        <!-- Button to view the psychologist's summary -->
+        <div class="summary-button-container">
+            <button @click="fetchSummary" class="summary-button">View Summary</button>
+        </div>
+
+        <!-- Modal for displaying summary -->
+        <div v-if="showSummary" class="modal">
+            <div class="modal-content">
+                <span @click="closeSummary" class="close-button">&times;</span>
+                <h3>Summary from {{ psychologist.name }}</h3>
+                <p>{{ summary }}</p>
+                <button @click="closeSummary" class="close-button">Close</button>
+            </div>
+        </div>
+
+
     </div>
   </template>
   
@@ -48,6 +64,8 @@ export default {
             image: this.$route.query.image, // Psychologist's image received from the query parameter
         },
         socket: null, // Socket.IO client
+        showSummary: false, // Flag to show/hide the summary modal
+        summary: '', // Summary text received from the backend
         };
     },
     created() {
@@ -124,6 +142,34 @@ export default {
             if (this.socket) {
             this.socket.disconnect();
             }
+        },
+        async fetchSummary() {
+            this.summary = 'Generating summary...';
+            this.showSummary = true;
+
+            try {
+                const response = await fetch('http://localhost:5000/summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ psychologist_name: this.psychologist.name }),
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                this.psychologistSummary = data.summary; //update the summary from backend
+                } else {
+                console.error('Error fetching summary:', data.error);
+                this.psychologistSummary = 'Failed to load summary. Please try again later.';
+                this.showSummaryModal = true;
+                }
+            } catch (error) {
+                console.error('Error fetching summary from backend:', error);
+                this.psychologistSummary = 'Unable to connect to the server. Please check your connection.';
+                this.showSummaryModal = true;
+            }
+        },
+        closeSummary() {
+            this.showSummary = false;
         },
         goBack() {
             // Navigate back to the introduction page
