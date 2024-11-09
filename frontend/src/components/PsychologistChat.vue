@@ -39,6 +39,10 @@
             <div class="modal-content">
                 <span @click="closeSummary" class="close-button">&times;</span>
                 <h3>Summary from {{ psychologist.name }}</h3>
+
+                <!-- Psychologist Image -->
+                <img :src="psychologist.image" :alt="psychologist.name" class="modal-image" />
+
                 <p>{{ summary }}</p>
                 <button @click="closeSummary" class="close-button">Close</button>
             </div>
@@ -286,4 +290,110 @@ cursor: pointer;
 .back-button:hover {
 background-color: #d32f2f;
 }
+
+
+/* Styles for the "View Summary" button */
+.summary-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.summary-button {
+  background-color: #007BFF;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.summary-button:hover {
+  background-color: #0056b3;
+}
+
+/* Modal overlay to cover the entire screen */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure modal is on top */
+}
+
+/* Modal content box styling */
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative; /* For close button positioning */
+  text-align: center;
+}
+
+.modal-content h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.modal-content p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* Close button styling for the modal */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+/* Additional close button at the bottom of the modal */
+.modal-content .close-button {
+  background-color: #f44336;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.modal-content .close-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Psychologist image styling inside modal */
+.modal-image {
+  width: 200px;
+  height: auto;
+  border-radius: 50%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+
 </style>
