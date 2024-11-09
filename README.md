@@ -2,7 +2,7 @@
 
 A web-based psychotherapy dialogue system that allows users to have therapeutic conversations with simulated renowned psychologists. This application includes a real-time chat interface, personalized responses from psychologists, and a summary generation feature.
 
------
+
 ## Set up
 
 ### Prerequisites:
@@ -43,7 +43,7 @@ cd ../frontend
 ```bash
 npm install
 ```
------
+
 ## Running the Application
 
 ### Starting the Backend Server
@@ -69,7 +69,8 @@ npm run serve
 ```
 
 The frontend server will run on `http://localhost:8080`.
------
+
+
 ## Usage
 
 1. **Homepage**: Select a psychologist to start a session.
