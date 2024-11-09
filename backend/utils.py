@@ -15,13 +15,24 @@ class OpenAIChat:
         
         openai.api_key = os.environ.get("OPENAI_API_KEY")
         
-    def load_file(self) -> None:
-        """Load prompt template
+    def load_prompt(self) -> None:
+        """Load the conversation prompt template
         
         Returns:
             str: Full prompt
         """
         file_path = "./prompt/prompt.txt"
+        with open(file_path) as f:
+            prompt_template = f.read()
+        return prompt_template
+    
+    def load_summary_prompt(self) -> None:
+        """Load the conversation summary prompt template
+        
+        Returns:
+            str: Full prompt
+        """
+        file_path = "./prompt/summary_prompt.txt"
         with open(file_path) as f:
             prompt_template = f.read()
         return prompt_template
@@ -41,13 +52,31 @@ class OpenAIChat:
         Raises:
             IndexError: If historical_message_list is empty when trying to access the last message.
         """
-        full_prompt = self.load_file()
+        full_prompt = self.load_prompt()
         full_prompt = full_prompt.replace("{psychologist_name}", psychologist_name)
         full_prompt = full_prompt.replace("{user_question}", user_question)
         
         # Only use the last message to avoid hitting the token limit
         last_message = historical_message_list[-1] if historical_message_list else "No historical messages"
         full_prompt = full_prompt.replace("{historical_messages}", last_message) 
+        return full_prompt
+    
+    def construct_summary_prompt(self, historical_message_list: list) -> str:
+        """Construct prompt to generate summary of conversation
+        
+        Args:
+            historical_message_list (list): List of historical messages from the conversation.
+        
+        Returns:
+            str: A formatted prompt with the historical messages.
+        """
+        if not historical_message_list:
+            return 'No historical messages to summarize.'
+        else:
+            historical_messages_text = "\n".join(historical_message_list)
+        
+        full_prompt = self.load_summary_prompt()
+        full_prompt = full_prompt.replace("{historical_messages}", historical_messages_text)
         return full_prompt
     
     def get_response(self, prompt: str, retries: int = 3, delay: float = 1.0) -> str:
