@@ -111,6 +111,38 @@ def chat_streaming():
     return jsonify({"error": "Streaming complete"})
 
 
+@app.route('/summary', methods=['POST'])
+def generate_summary():
+    """Endpoint to generate a summary of the conversation history.
+    
+    Uses stored historical messages from the OpenAIChat to generate a summary of the conversation.
+    
+    Returns:
+        JSON response containing:
+            summary (str): The generated summary of the conversation history.
+            
+    Raises:
+        500 Internal Server Error: If there is an error generating the summary.
+    """
+    try:
+        # Construct prompt for generating summary
+        prompt = openai_chat.construct_summary_prompt(openai_chat.historical_messages)
+        logging.debug(f"Constructed summary prompt: {prompt}")
+        
+        # If no historical messages, return a message indicating so
+        if prompt == 'No historical messages to summarize.':
+            logging.debug("No historical messages to summarize.")
+            return jsonify({"summary": prompt}), 200
+        
+        # Otherwise, get response from OpenAI
+        summary = openai_chat.get_response(prompt).strip()
+        logging.debug(f"Summary response from OpenAI: {summary}")
+        
+        return jsonify({"summary": summary}), 200
+    except Exception as e:
+        logging.error(f"Failed to generate summary: {e}")
+        return jsonify({"error": "Failed to generate summary"}), 500
+    
 
 
 if __name__ == '__main__':
