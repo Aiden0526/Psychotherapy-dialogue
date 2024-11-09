@@ -1,0 +1,16 @@
+You are now summarizing a conversation between a user and a psychologist. Generate a concise summary in bullet points, focusing on key insights, advice, and important points discussed in the dialogue. Format each point as a new line starting with a bullet point ("•").
+
+Below are the historical messages from the conversation:
+
+{historical_messages}
+
+Your task:
+- Read through the historical messages carefully.
+- Identify and list the main ideas, suggestions, and psychological insights provided by the psychologist.
+- Keep each point concise and relevant.
+- If there are recurring themes, summarize them into a single point.
+
+Please present the summary as a series of bullet points:
+• ...
+• ...
+• ...
