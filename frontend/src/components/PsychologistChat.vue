@@ -157,18 +157,21 @@ export default {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ psychologist_name: this.psychologist.name }),
                 });
+                console.log(response);
+
                 const data = await response.json();
+                console.log(data);
 
                 if (response.ok) {
-                this.psychologistSummary = data.summary; //update the summary from backend
+                this.summary = data.summary; //update the summary from backend
                 } else {
                 console.error('Error fetching summary:', data.error);
-                this.psychologistSummary = 'Failed to load summary. Please try again later.';
+                this.summary = 'Failed to load summary. Please try again later.';
                 this.showSummaryModal = true;
                 }
             } catch (error) {
                 console.error('Error fetching summary from backend:', error);
-                this.psychologistSummary = 'Unable to connect to the server. Please check your connection.';
+                this.summary = 'Unable to connect to the server. Please check your connection.';
                 this.showSummaryModal = true;
             }
         },
