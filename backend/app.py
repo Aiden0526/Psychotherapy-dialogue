@@ -88,6 +88,7 @@ def chat_streaming():
     prompt = openai_chat.construct_prompt(psychologist_name, user_question, openai_chat.historical_messages)
     logging.debug(f"Constructed prompt: {prompt}")
     
+    full_response = ""
     # Get response from OpenAI
     try:
         # Stream the OpenAI response to the client
@@ -95,14 +96,22 @@ def chat_streaming():
             if chunk:
                 logging.debug(f"Response from utils: {chunk}")
                 socketio.emit('response_streaming', {'data': chunk})
+                full_response += chunk
             else:
                 logging.debug("Received empty chunk, skipping.")
 
+        message_entry = f"User: {user_question}\nPsychologist: {full_response}"
+        openai_chat.historical_messages.append(message_entry)
+        logging.debug(f"Message appended to history: {openai_chat.historical_messages}")
+        
     except Exception as e:
         logging.error(f"Failed to get response from utils: {e}")
         return jsonify({"Fail to get response from utils": str(e)}), 500
     
     return jsonify({"error": "Streaming complete"})
+
+
+
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
