@@ -6,7 +6,7 @@ A web-based psychotherapy dialogue system that allows users to have therapeutic 
 ## Set up
 
 ### Prerequisites:
-- Node.js and npm
+- Node.js v23.1.0 and npm 10.9.0
 - Python 3.9
 
 ### Clone the Repository:
