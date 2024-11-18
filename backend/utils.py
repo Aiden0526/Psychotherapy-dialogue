@@ -111,7 +111,7 @@ class OpenAIChat:
                     
                     
     def get_response_streaming(self, prompt: str, retries: int = 3, delay: float = 1.0) -> str:
-        """Get response from OpenAI
+        """Get response from OpenAI in Streaming
         
         Args:
             prompt (str): The constructed prompt for OpenAI API to process.
